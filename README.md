@@ -39,7 +39,7 @@ To have an overview about *Reinforcement Learning*, I suggest you learning [*wee
 
 + *`Reward`*:  the *agent* will get a reward $r(s)$ when it takes an action $a$ at state $s$ 
 
-    + *Notation*: a reward of the action to another state ($r(s)$)
+    + *Notation*: a reward $r(s)$ of the action to another state
 
 + *`The return`*: is the estimate of the total long-term reward of a trajectory. On the other hand, it is sum of rewards the system got, and weighted by the *discount* factor.
 
@@ -49,7 +49,7 @@ To have an overview about *Reinforcement Learning*, I suggest you learning [*wee
 
     + *Formula*: given a state $S$ at the time $t$
     
-    $$ G_t = R(\tau) = r_t + r_{(t+1)} \times \gamma + r_{(t+2)} \times \gamma ^ 2 + r_{(t+3)} \times \gamma ^ 3 + ...  $$
+    $$G_t = R(\tau) = r_t + r_{(t+1)} \times \gamma + r_{(t+2)} \times \gamma ^ 2 + r_{(t+3)} \times \gamma ^ 3 + ...$$
 
 + *`Policy`*: is a function mapping states to actions.
 
@@ -57,13 +57,15 @@ To have an overview about *Reinforcement Learning*, I suggest you learning [*wee
 
     + ***The goal of Reinforcement learning*** is to find $\pi$ such that $a = \pi(s)$ and we will know what action $a$ needed to take in every state $s$ to maximize the *return*.
 
-+ *`Markov Decision Process (MDP)`*: is a model for how the state of a system evolves as different actions are applied to the system. $$MDP: (S, A, r)$$
++ *`Markov Decision Process (MDP)`*: is a model for how the state of a system evolves as different actions are applied to the system. 
+$$MDP: (S, A, r)$$
 
-    + Let’s now consider the situation when the agent starts at a particular state and continues taking actions to result in a **trajectory** $\tau$: $$ \tau = (s_0, a_0, r_0, s_1, a_1, r_1,...)$$
+    + Let’s now consider the situation when the agent starts at a particular state and continues taking actions to result in a **trajectory** $\tau$: 
+    $$\tau = (s_0, a_0, r_0, s_1, a_1, r_1,...)$$
 
 ![Overview](https://techvidvan.com/tutorials/wp-content/uploads/sites/2/2020/08/Reinforcement-Learning-in-ML-TV.jpg)
 
-\- **Workdflow:** In the standard “agent-environment loop” formalism, an agent interacts with the environment in discrete time steps $t = 0,1,2,3,...$. At each time step $t$, the agent use a policy $\pi$ to select an action $a$ based on its observation of the environment's state $s_t$. The agent receives a numerical reward $r_t$ and on the next time step, moves to a new state $s_{t+1}$. 
+\- **Workflow:** In the standard “agent-environment loop” formalism, an agent interacts with the environment in discrete time steps $t$ = 0,1,2,3,.... At each time step $t$, the agent use a policy $\pi$ to select an action $a$ based on its observation of the environment's state $s_t$. The agent receives a numerical reward $r_t$ and on the next time step, moves to a new state $s_{t+1}$. 
 
 \- **Applications:**
 
@@ -90,7 +92,7 @@ To have an overview about *Reinforcement Learning*, I suggest you learning [*wee
 ![](./img/Bellman-equation.jpg)
 
 
-\- **Random (stochastic) environment:** the sequence of different rewards and next state $s'$ is uncertain because we have a probability of going in the wrong direction which do not comply with the policy. $$ExpectedReturn = Average(r_1 + \tau \times r_2 + \tau ^ 2 \times r_3 + ...) \\ = E[r_1 + \tau \times r_2 + \tau ^ 2 \times r_3 + ...]$$
+\- **Random (stochastic) environment:** the sequence of different rewards and next state $s'$ is uncertain because we have a probability of going in the wrong direction which do not comply with the policy. $$ExpectedReturn = Average(r_1 + \tau \times r_2 + \tau ^ 2 \times r_3 + ...) \\\ = E[r_1 + \tau \times r_2 + \tau ^ 2 \times r_3 + ...]$$
 
 + The goal of RL in this case is to find a policy to maximize the average value of the return. 
 
@@ -105,14 +107,13 @@ To have an overview about *Reinforcement Learning*, I suggest you learning [*wee
 
 + **Deep Q-Network (DQN)** algorithm: 
 
-  + is used to approximate the action-value function $Q(s,a)\approx Q^*(s,a)$ or minimize the *mean-squared error* between them in the case of *<u>the state space is continuous</u>* (i.e., we cannot explore the entire state-action space and it is impossible to gradually update $Q(s,a)$ to $Q^*(s,a)$). 
+  + is used to approximate the action-value function ${Q(s,a)}$ $\approx$ $Q^\*(s,a)$ or minimize the mean-squared error between them in the case of <u>the state space is continuous</u> (i.e., we cannot explore the entire state-action space and it is impossible to gradually update $Q(s,a)$ to $Q^\*(s,a)$ ). 
 
   + uses a neural network to train a model to predict Q functions where guessing of $Q(s,a)$ constructed using Bellman equation as follows
 
 $$
 Q(s,a) = R + \gamma \max_{a'}Q(s',a')
 $$
-
 
 
 ![](./img/Deep-Q-Network.png)
@@ -133,7 +134,14 @@ $$
 
 + *Mini-batch learning or gradient descend*: if we have a large dataset, we need to divide our dataset into a number of smaller batches where parameters are updated each batch in stead of the entire dataset (*Batch learning*). 
 
-+ *Soft updates*: make changes from the new value $Q$ to the old value $Q$ not too oscillating and unstable in the case of $Q$ new is worst than $Q$ old. For example, with $ \theta \ll 1 $ $$W_{current} = \theta W_{new} + (1 - \theta)W_{current} \\ b_{current} = \theta b_{new} + (1 - \theta) b_{current}$$
++ *Soft updates*: make changes from the new value $Q$ to the old value $Q$ not too oscillating and unstable in the case of $Q$ new is worst than $Q$ old. For example, with $\theta \ll 1$, 
+
+$$
+\begin{split}
+W_{current} = \theta W_{new} + (1 - \theta)W_{current} \\
+b_{current} = \theta b_{new} + (1 - \theta) b_{current}
+\end{split}
+$$
 
 
 <a name="2"></a>
