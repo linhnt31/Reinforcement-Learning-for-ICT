@@ -9,7 +9,7 @@ ___
   - [1.3 - Continuous state spaces](#1.3) 
 - [ 2 - Hands-on projects](#2)
   - [2.1 - Deep Q-Learning for Lunar Lander](#2.1)
-  - [2.2 - Working in progress](#2.1)
+  - [2.2 - Human-Level Control Through Deep Reinforcement Learning](#2.2)
 
 <a name="1"></a>
 ## 1 - Fundamentals <img align="left" src="https://static.javatpoint.com/tutorial/reinforcement-learning/images/reinforcement-learning-markov-decision-process.png" style=" width:50px;">
@@ -147,3 +147,9 @@ $$
 \- **Highlight:** in this lab we will learn how to implement *Deep Q-Learning* algorithm with two techniques, called ***target network*** and ***experience replay*** to avoid instabilities when using neural networks in reinforcement learning to estimate action-value functions or $Q(s, a)$.
 
 ![](./img/deep_q_algorithm_with_experience_replay.png)
+
+
+<a name="2.3"></a>
+#### [2.2 - Human-Level Control Through Deep Reinforcement Learning paper]()
+
+\- Link to paper: [Human-Level Control Through Deep Reinforcement Learning](https://www.nature.com/articles/nature14236)
