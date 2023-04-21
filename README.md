@@ -71,14 +71,16 @@ To have an overview about *Reinforcement Learning*, I suggest you learning [*wee
 
 + *`Transition function`*: is denoted as $P(s'|s, a)$. 
 
-\- *`Markov Decision Process (MDP)`*: is a model for how the state of a system evolves as different actions are applied to the system. *It helps an agent to make a decision at a specific state*. 
+\- *`Markov Decision Process (MDP)`*: is a model for how the state of a system evolves as different actions are applied to the system. *It is a discrete time stochastic control process and helps an agent to make a decision at a specific state*. Here is two Markov properties: 
 $$MDP: (S, A, r)$$
 
-  + **Random (stochastic) environment:** the sequence of different rewards and next state $s'$ is uncertain because we have a probability of going in the wrong direction which do not comply with the policy. 
+  + Each state $s_t$ only depends on the previous state $s_{t-1}$ and the transition $P(s_t|s_{t-1}, a)$.
+
+    + **Random (stochastic) environment:** the sequence of different rewards and next state $s'$ is uncertain because we have a probability of going in the wrong direction which do not comply with the policy. 
 
 ![](https://images.viblo.asia/9f673f2f-6e41-4ebf-8cae-141c473d5a72.PNG)
 
-  + **Memoryless property**: we do not need to remember previous states to represent the current state => reducing computational complexity and storage.
+  + **Memoryless property**: we do not need to remember all previous states to represent the current state => reducing computational complexity and storage.
 
 $$Q^\*(s,a)=ExpectedReturn = Average(r_t + \gamma r_{t+1} + \gamma ^ 2 r_{t+2} + ...) \\\ = E[r_t + \gamma  r_{t+1} + \gamma ^ 2 r_{t+2} + ...]$$
 
@@ -101,12 +103,11 @@ Which is the sum of rewards $r_t$ discounted by $\gamma$ at each timestep $t$, a
 
 \- **Definition:**
 
-+ The goal of $Q-function$ is ***off-policy*** and is to find the optimal policy, given a current state of the agent.
++ The goal of $Q-function$ is ***off-policy*** and is to find the optimal policy to mazimize the reward, given a current state of the agent.
 
     + Find out the differences between *off-policy* and *on-policy* [here](https://stats.stackexchange.com/questions/184657/what-is-the-difference-between-off-policy-and-on-policy-learning).
-+ *Notation*:  $Q(s, a)$
 
-+ We calculate the $Q(s, a)$ like calculating the return $G_t$ with discount factor $\gamma$ in the deterministic environment.
++ *Notation*:  $Q(s, a)$
 
 + A lower $\gamma$ makes rewards from the uncertain far future less important for an agent than the ones in the near future that it can be fairly confident about.
 
@@ -117,20 +118,34 @@ Which is the sum of rewards $r_t$ discounted by $\gamma$ at each timestep $t$, a
 
 ![](./img/Bellman-equation.jpg)
 
-+ The goal of RL in this case is to find a policy to maximize the average value of the return. 
+On the other hand, as we know that RL is a stochastic process, Q-values will be different at the time before and after. The disparity is called ***Temporal Difference*** (TD):
+
+$$TD(a, s) = r(s,a) + \gamma \max_{a'}Q(s', a') - Q_{t-1}(s,a)$$
+
+We can get a new Q-value using this equation: 
+
+$$Q_t(s, a) = Q_{t-1}(s,a) + \alpha TD_t (a,s)$$
 
 <a name="1.3"></a>
-#### 1.3 - **Continuous state spaces**
+#### 1.3 - **Continuous state spaces** 
 
-\- Using *Deep RL* with a training dataset created by *Bellman equation*: 
+\- With **Q-learning** we havea lookup table $Q(s,a)$ where:
 
-+ Input: a pair of ($s, a$) - X
+  + Input: a pair of ($s, a$) - X
 
-+ Output: $Q(s, a)$  - y
+  + Output: $Q(s, a)$  - y
+
+\- Besides, using *Deep RL* with a training dataset created by *Bellman equation*:
+
+  + Input: a set of states- X
+
+  + Output: Q-values of actions  - y
 
 + **Deep Q-Network (DQN)** algorithm: 
 
   + is used to approximate the action-value function ${Q(s,a)}$ $\approx$ $Q^\*(s,a)$ or minimize the mean-squared error between them in the case of <u>the state space is continuous</u> (i.e., we cannot explore the entire state-action space and it is impossible to gradually update $Q(s,a)$ to $Q^\*(s,a)$ ). 
+
+  + Loss function: $$TD^2 (a,s)$$
 
   + uses a neural network to train a model to predict Q functions, named ***target values***, where guessing of $Q(s,a)$ constructed using Bellman equation as follows
 
@@ -186,4 +201,4 @@ $$
 
 \- **Highlights:**
 
-+ We will be using **experience replay memory** for training our DQN. It stores the *transitions that the agent observes*, allowing us to reuse this data later. By sampling from it *randomly*, the transitions that build up a batch are decorrelated. It has been shown that this greatly stabilizes and improves the DQN training procedure.
++ We will be using **experience replay memory** for training our DQN. It stores the *transitions that the agent observes*, allowing us to reuse this data later and <u>preventing overfitting because continuous states are often similar or linear</u>. By sampling from it *randomly*, the transitions that build up a batch are decorrelated. It has been shown that this greatly stabilizes and improves the DQN training procedure.
