@@ -35,6 +35,8 @@ To have an overview about *Reinforcement Learning*, I suggest you learning [*wee
 
     + *Terminal state* nothing more happens
 
+> Differences between **a state** and **an observation**: *"The state needs to contain all the information to ensure that the system is Markovian; meaning that given the current state, you have perfect information about the probability distribution of all possible future states, dependent on the actions taken. The observation function does not have any such strict restrictions. It can be any stochastic function dependent on the state".* [[Answered by Robby Goetschalckx in Quora]](https://www.quora.com/What-is-the-difference-between-an-observation-and-a-state-in-reinforcement-learning)
+
 + *`Action`*: at each state $s$, the agent can take an action $a$ in the set of actions $A$.
 
     + *Notation*: an action ($a$)
@@ -42,6 +44,8 @@ To have an overview about *Reinforcement Learning*, I suggest you learning [*wee
 + *`Reward`*:  the *agent* will get a reward $r(s)$ when it takes an action $a$ at state $s$ 
 
     + *Notation*: a reward $r(s)$ of the action to another state
+
++ *`Episode`* is a sequence of interactions between the *agent* and *environment* from intial to terminal states.
 
 + *`The return`*: is the estimate of the total long-term reward of a trajectory. On the other hand, it is sum of rewards the system got, and weighted by the *discount* factor.
 
@@ -59,15 +63,32 @@ To have an overview about *Reinforcement Learning*, I suggest you learning [*wee
 
     + ***The goal of Reinforcement learning*** is to find $\pi$ such that $a = \pi(s)$ and we will know what action $a$ needed to take in every state $s$ to maximize the *return*.
 
-+ *`Markov Decision Process (MDP)`*: is a model for how the state of a system evolves as different actions are applied to the system. 
+    + We have two kinds of policies: 
+
+      + **Deterministic policy** in the deterministic environment: maps from a state to an action
+
+      + **Stochastic policy** in the stochastic environment: maps from a state to a distribution over actions.
+
++ *`Transition function`*: is denoted as $P(s'|s, a)$. 
+
+\- *`Markov Decision Process (MDP)`*: is a model for how the state of a system evolves as different actions are applied to the system. *It helps an agent to make a decision at a specific state*. 
 $$MDP: (S, A, r)$$
 
-    + Let’s now consider the situation when the agent starts at a particular state and continues taking actions to result in a **trajectory** $\tau$: 
+  + **Random (stochastic) environment:** the sequence of different rewards and next state $s'$ is uncertain because we have a probability of going in the wrong direction which do not comply with the policy. 
+
+![](https://images.viblo.asia/9f673f2f-6e41-4ebf-8cae-141c473d5a72.PNG)
+
+  + **Memoryless property**: we do not need to remember previous states to represent the current state => reducing computational complexity and storage.
+
+$$Q^\*(s,a)=ExpectedReturn = Average(r_t + \gamma r_{t+1} + \gamma ^ 2 r_{t+2} + ...) \\\ = E[r_t + \gamma  r_{t+1} + \gamma ^ 2 r_{t+2} + ...]$$
+
+Which is the sum of rewards $r_t$ discounted by $\gamma$ at each timestep $t$, achievable by a policy $\pi=P(a|s)$. 
+  + Let’s now consider the situation when the agent starts at a particular state and continues taking actions to result in a **trajectory** $\tau$: 
     $$\tau = (s_0, a_0, r_0, s_1, a_1, r_1,...)$$
 
 ![Overview](https://techvidvan.com/tutorials/wp-content/uploads/sites/2/2020/08/Reinforcement-Learning-in-ML-TV.jpg)
 
-\- **Workflow:** In the standard “agent-environment loop” formalism, an agent interacts with the environment in discrete time steps $t$ = 0,1,2,3,.... At each time step $t$, the agent use a policy $\pi$ to select an action $a$ based on its observation of the environment's state $s_t$. The agent receives a numerical reward $r_t$ and on the next time step, moves to a new state $s_{t+1}$. 
+\- **Workflow:** In the standard *agent-environment loop* formalism, an agent interacts with the environment in discrete time steps $t$ = 0,1,2,3,.... At each time step $t$, the agent use a policy $\pi$ to select an action $a$ based on its observation of the environment's state $s_t$. The agent receives a numerical reward $r_t$ and on the next time step, moves to a new state $s_{t+1}$. 
 
 \- **Applications:**
 
@@ -80,11 +101,14 @@ $$MDP: (S, A, r)$$
 
 \- **Definition:**
 
-+ The goal of $Q-function$ is to find the optimal policy.
++ The goal of $Q-function$ is ***off-policy*** and is to find the optimal policy, given a current state of the agent.
 
+    + Find out the differences between *off-policy* and *on-policy* [here](https://stats.stackexchange.com/questions/184657/what-is-the-difference-between-off-policy-and-on-policy-learning).
 + *Notation*:  $Q(s, a)$
 
-+ We calculate the $Q(s, a)$ like calculating the return $G_t$ with discount factor $\gamma$
++ We calculate the $Q(s, a)$ like calculating the return $G_t$ with discount factor $\gamma$ in the deterministic environment.
+
++ A lower $\gamma$ makes rewards from the uncertain far future less important for an agent than the ones in the near future that it can be fairly confident about.
 
 ![](./img/Q-function.png)
 
@@ -92,9 +116,6 @@ $$MDP: (S, A, r)$$
 \- **Bellman equation:** sequence of rewards after you take an action $a$ at the state $s$.
 
 ![](./img/Bellman-equation.jpg)
-
-
-\- **Random (stochastic) environment:** the sequence of different rewards and next state $s'$ is uncertain because we have a probability of going in the wrong direction which do not comply with the policy. $$ExpectedReturn = Average(r_1 + \tau \times r_2 + \tau ^ 2 \times r_3 + ...) \\\ = E[r_1 + \tau \times r_2 + \tau ^ 2 \times r_3 + ...]$$
 
 + The goal of RL in this case is to find a policy to maximize the average value of the return. 
 
@@ -111,10 +132,10 @@ $$MDP: (S, A, r)$$
 
   + is used to approximate the action-value function ${Q(s,a)}$ $\approx$ $Q^\*(s,a)$ or minimize the mean-squared error between them in the case of <u>the state space is continuous</u> (i.e., we cannot explore the entire state-action space and it is impossible to gradually update $Q(s,a)$ to $Q^\*(s,a)$ ). 
 
-  + uses a neural network to train a model to predict Q functions where guessing of $Q(s,a)$ constructed using Bellman equation as follows
+  + uses a neural network to train a model to predict Q functions, named ***target values***, where guessing of $Q(s,a)$ constructed using Bellman equation as follows
 
 $$
-Q(s,a) = R + \gamma \max_{a'}Q(s',a')
+Q(s,a) = r + \gamma \max_{a'}Q(s',a')
 $$
 
 
@@ -145,7 +166,6 @@ b_{current} = \theta b_{new} + (1 - \theta) b_{current}
 \end{split}
 $$
 
-
 <a name="2"></a>
 ## 2 - Hands-on projects <img align="left" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQFrV7YddcdauSh0r01W58FYrho5pHZl93tA&usqp=CAU" style=" width:25px;">
 
@@ -160,6 +180,10 @@ $$
 
 
 <a name="2.3"></a>
-#### [2.2 - Human-Level Control Through Deep Reinforcement Learning paper]()
+#### [2.2 - Train a Deep Q-Learning (DQN) agent on the CartPole-v1 task]()
 
-\- Link to paper: [Human-Level Control Through Deep Reinforcement Learning](https://www.nature.com/articles/nature14236)
+\- In this lab, we will train a policy that tries to maximize the *return* $r_t$.
+
+\- **Highlights:**
+
++ We will be using **experience replay memory** for training our DQN. It stores the *transitions that the agent observes*, allowing us to reuse this data later. By sampling from it *randomly*, the transitions that build up a batch are decorrelated. It has been shown that this greatly stabilizes and improves the DQN training procedure.
