@@ -9,6 +9,8 @@ ___
   - [1.1 - Concepts and Components](#1.1) 
   - [1.2 - State-action value functions (Q-function)](#1.2) 
   - [1.3 - Continuous state spaces](#1.3) 
+  - [1.4 - Deep Reinforcement Learning](#1.4)
+    - [1.4.1 - Model-free algorithms](#1.4.1)
 - [ 2 - Hands-on projects](#2)
   - [2.1 - Deep Q-Learning for Lunar Lander](#2.1)
   - [2.2 - Train a Deep Q-Learning (DQN) agent on the CartPole-v1 task](#2.2)
@@ -184,7 +186,7 @@ where $\pi(a|s)$ is the probability of taking the action $a$ at the state $s$ an
 <a name="1.3"></a>
 #### 1.3 - **Continuous state spaces** 
 
-\- With **Q-learning** we havea lookup table $Q(s,a)$ where:
+\- With **Q-learning** we have a lookup table $Q(s,a)$ where:
 
   + Input: a pair of ($s, a$) - X
 
@@ -196,30 +198,47 @@ where $\pi(a|s)$ is the probability of taking the action $a$ at the state $s$ an
 
   + Output: Q-values of actions  - y
 
-+ **Deep Q-Network (DQN)** algorithm: 
+> By using Deep RL, we can use neural networks which allow dealing with a continuous state or action that was hard for a table representation.
 
-  + is used to approximate the action-value function ${Q(s,a)}$ $\approx$ $Q^\*(s,a)$ or minimize the mean-squared error between them in the case of <u>the state space is continuous</u> (i.e., we cannot explore the entire state-action space and it is impossible to gradually update $Q(s,a)$ to $Q^\*(s,a)$ ). 
+<a name="1.4"></a>
+#### 1.4 - Deep Reinforcement Learning
 
-  + Loss function: $$TD^2 (a,s)$$
+Deep Reinforcement Learning (DRL) is a combination of RL and Deep Learning. DRL can be categorized into ***model-based*** algorithms and ***model-free*** algorithms.
 
-  + uses a neural network to train a model to predict Q functions, named ***target values***, where guessing of $Q(s,a)$ constructed using Bellman equation as follows
+<a name="1.4.1"></a>
+##### 1.4.1 - Model-free algorithms
 
-$$
-Q(s,a) = r + \gamma \max_{a'}Q(s',a')
-$$
+\- In the *model-free* algorithm, we have two methods to implement it:
+
+  + `Value-based DRL`:
+
+    + **Deep Q-Network (DQN)**: 
+
+      + learns *policies* directly from high-dimensional inputs by *CNNs*. It is used to approximate the action-value function ${Q(s,a)}$ $\approx$ $Q^\*(s,a)$ or minimize the mean-squared error between them in the case of <u>the state space is continuous</u> (i.e., we cannot explore the entire state-action space and it is impossible to gradually update $Q(s,a)$ to $Q^\*(s,a)$ ). 
+
+      + Loss function: $$TD^2 (a,s)$$
+
+      + uses a neural network to train a model to predict Q functions, named ***target values***, where guessing of $Q(s,a)$ constructed using Bellman equation as follows
+
+    $$
+    Q(s,a) = r + \gamma \max_{a'}Q(s',a')
+    $$
 
 
-![](./img/Deep-Q-Network.png)
+    ![](./img/Deep-Q-Network.png)
 
-\- **$\epsilon$-greedy policy**: is to choose best actions while still learning. For instance, in some state $s$
+    \- **$\epsilon$-greedy policy**: is to choose best actions while still learning. For instance, in some state $s$
 
-+ *Option 1*: we pick the action $a$ that maximizes $Q(s, a)$. 
+    + *Option 1*: we pick the action $a$ that maximizes $Q(s, a)$. 
 
-+ *Option 2*: called **$\epsilon$-greedy policy**
+    + *Option 2*: called **$\epsilon$-greedy policy**
 
-  + With probability of $1 - \epsilon$, we pick the action $a$ that maximizes $Q(s, a)$, named ***Greedy*** or ***Expoitation***. 
+      + With probability of $1 - \epsilon$, we pick the action $a$ that maximizes $Q(s, a)$, named ***Greedy*** or ***Expoitation***. 
 
-  + With probability of $\epsilon$, we pick the action $a$ <u>randomly</u> that maximizes $Q(s, a)$, named ***Exploration***. 
+      + With probability of $\epsilon$, we pick the action $a$ <u>randomly</u> that maximizes $Q(s, a)$, named ***Exploration***. 
+
+  + `Policy gradient DRL`:
+
 
 + **NOTE**: at the beginning, we start with $\epsilon$ high and gradually decrease it. 
 
