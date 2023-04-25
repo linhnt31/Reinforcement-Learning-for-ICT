@@ -11,7 +11,7 @@ ___
   - [1.3 - Continuous state spaces](#1.3) 
 - [ 2 - Hands-on projects](#2)
   - [2.1 - Deep Q-Learning for Lunar Lander](#2.1)
-  - [2.2 - Human-Level Control Through Deep Reinforcement Learning](#2.2)
+  - [2.2 - Train a Deep Q-Learning (DQN) agent on the CartPole-v1 task](#2.2)
 
 <a name="1"></a>
 ## 1 - Fundamentals <img align="left" src="https://static.javatpoint.com/tutorial/reinforcement-learning/images/reinforcement-learning-markov-decision-process.png" style=" width:50px;">
@@ -132,7 +132,7 @@ Which is the sum of rewards $r_t$ discounted by $\gamma$ at each timestep $t$, a
 
 $$V^{\pi}(s) = E[R_t|s_t=s]$$
 
-  where $R_t = \sum_{k = 0} ^ {\infty} \gamma ^ {k} \times r_{t+k}$. It can decompose into the **Bellman equation** that decomposes the value function into two parts, ***the immediate reward*** plus ***the discounted future values***: 
+  where $R_t = \sum\limits_{k=0}^{\infty} \gamma ^ {k} \times r_{t+k}$. It can decompose into the **Bellman equation** that decomposes the value function into two parts, ***the immediate reward*** plus ***the discounted future values***: 
 
 $$V^{\pi}(s_t) = \sum_{a \in A} \pi(a_t|s_t) \sum_{s_{t+1},r_t} P(s_{t+1}|s_t, a_t)[r_t + \gamma V^{\pi}(s_{t+1})]$$
 
