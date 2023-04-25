@@ -25,7 +25,7 @@ To have an overview about *Reinforcement Learning*, I suggest you learning [*wee
 
 \- First, we figure out how many key components and their roles in RL:
 
-+ *`Agent`*
++ *`Agent`*: interacts with an *environment* over time.
 
 + *`Environment`*: represents a problem or a task to be solved. 
 
@@ -51,13 +51,13 @@ To have an overview about *Reinforcement Learning*, I suggest you learning [*wee
 
     + *Notation*: a return $G_t$ and a discount factor ($\gamma$) that is used in the situation where the sequence of states and actions in a trajectory can be *infinitely long* and *the return of any such infinitely long trajectory will be infinite*.
 
-    + *Discount* value: is a number close to 1.
+    + *Discount* value: $\gamma \in (0, 1]$
 
-    + *Formula*: given a state $S$ at the time $t$
+    + *Formula* (the problem is set up in *discrete* state and action spaces): given a state $S$ at the time $t$
     
     $$G_t = R(\tau) = r_t + r_{(t+1)} \times \gamma + r_{(t+2)} \times \gamma ^ 2 + r_{(t+3)} \times \gamma ^ 3 + ...$$
 
-+ *`Policy`*: is a function mapping states to actions.
++ *`Policy`*: <u>is a function mapping states to distribution over actions</u>. At each time step $t$, the agent receives a state $s_t$ in a state space $S$ from the environment and choose an action $a_t$ from an action space $A$, following a policy $\pi (a_t|s_t)$.
 
     + *Notation*: a function $\pi(s) = a$ tells us what action $a$ to take in a given state $s$.
 
@@ -68,6 +68,20 @@ To have an overview about *Reinforcement Learning*, I suggest you learning [*wee
       + **Deterministic policy** in the deterministic environment: maps from a state to an action
 
       + **Stochastic policy** in the stochastic environment: maps from a state to a distribution over actions.
+
+    + Policy methods [[Deep Reinforcement Learning by Yuxi Li]](https://arxiv.org/abs/1810.06339): 
+
+      + **On-policy method:**
+
+        + It evaluates or improves the behaviour (action) policy.
+
+        + Example: SARSA,...
+
+      + **Off policy method:**
+
+        + An agent learns an optimal value function/policy, maybe following an unrelated behaviour (action) policy. For instance, Q-learning attempts to find action values for the optimal policy directly, <u>not necessarily fitting to the policy generating the data</u>, i.e., the policy Q-learning obtains is usually different from the policy that generates the samples.
+
+        + Example: Q-learning,...
 
 + *`Transition function`*: is denoted as $P(s'|s, a)$. 
 
@@ -92,18 +106,48 @@ Which is the sum of rewards $r_t$ discounted by $\gamma$ at each timestep $t$, a
 
 \- **Workflow:** In the standard *agent-environment loop* formalism, an agent interacts with the environment in discrete time steps $t$ = 0,1,2,3,.... At each time step $t$, the agent use a policy $\pi$ to select an action $a$ based on its observation of the environment's state $s_t$. The agent receives a numerical reward $r_t$ and on the next time step, moves to a new state $s_{t+1}$. 
 
+
+\- **NOTE**: some confused terms
+
+  + **The system model** in *model-free* and *model-based* methods: may be *state transition* and *reward*,...
+
 \- **Applications:**
 
 + Controlling robots
 
 + Factory optimization
 
+> When the system model is available, we use dynamic programming methods: **policy evaluation** to calculate value/action value function for a policy, **value iteration** and **policy iteration** for <u>finding an optimal policy</u>. When there is no model, we resort to RL methods.
+
 <a name="1.2"></a>
 #### 1.2 - **State-action value function (Q-function)**
 
 \- **Definition:**
 
-+ The goal of $Q-function$ is ***off-policy*** and is to find the optimal policy to mazimize the reward, given a current state of the agent.
+> A value function is a prediction of the expected, accumulative, discounted, future reward to evaluate the quality of the state or the action-value pair. 
+
+\- **Background knowledge:**
+
++ The **state value** function is the expected return for following policy $\pi$ from state $s$ and can be formulated as follows:
+
+$$V^{\pi}(s) = E[R_t|s_t=s]$$
+
+  where $R_t = \sum_{k = 0} ^ {\infty} \gamma ^ {k} \times r_{t+k}$. It can decompose into the **Bellman equation** that decomposes the value function into two parts, ***the immediate reward*** plus ***the discounted future values***: 
+
+$$V^{\pi}(s_t) = \sum_{a \in A} \pi(a_t|s_t) \sum_{s_{t+1},r_t} P(s_{t+1}|s_t, a_t)[r_t + \gamma V^{\pi}(s_{t+1})]$$
+
+  where $\pi(a_t|s_t)$ is the probability of taking action $a_t$ given the state $s_t$, $P(s_{t+1}|s_t, a_t)$ is the probability of trasitioning to a new state $s_{t+1}$ after taking action $a_t$ at the state $s_t$, and $\sum_{a \in A} \pi(a|s)=1$. 
+
++ The **action-state** or $Q$ value function is the expected return for selecting action $a$ in state $s$ and then following policy $\pi$:
+
+$$Q^{\pi} (s, a)= E[R_t | s_t=s, a_t=a]$$
+
+It can decompose into the **Bellman equation** that decomposes the value function into two parts, ***the immediate reward*** plus ***the discounted future values***:
+
+$$Q^{\pi} (s, a) = \sum_{s_{t+1},r_t} P(s_{t+1}|s_t, a_t)[r_t + \gamma \sum_{a'} \pi(s_{t+1}, a_{t+1}) Q^{\pi}(s_{t+1}, a_{t+1})]$$
+
+\- **Q-function:**
++ The goal of $Q-function$ (***off-policy***) is to find the optimal policy to mazimize the reward, given a current state of the agent.
 
     + Find out the differences between *off-policy* and *on-policy* [here](https://stats.stackexchange.com/questions/184657/what-is-the-difference-between-off-policy-and-on-policy-learning).
 
@@ -125,6 +169,17 @@ $$TD(a, s) = r(s,a) + \gamma \max_{a'}Q(s', a') - Q_{t-1}(s,a)$$
 We can get a new Q-value using this equation: 
 
 $$Q_t(s, a) = Q_{t-1}(s,a) + \alpha TD_t (a,s)$$
+
+
+\- Besides, we also have a definition related to $V^{\pi}(s)$ - is the **state value function** of an MDP. It is the expected return starting from state $s$ following policy $\pi$. $$V^{\pi}(s)=E_{\pi} \{ G_t | s_t = s \}$$
+
+where $G_t$ is the total discounted reward from time step $t$.  
+
+We can see a relationship between the expected return starting from state $s$, taking action $a$ - $Q^{\pi}(s,a)$  and $V^{\pi}(s)$: 
+
+$$V^{\pi}(s) = \sum_{a \in A} \pi(a|s) \times Q^{\pi}(s,a)$$
+
+where $\pi(a|s)$ is the probability of taking the action $a$ at the state $s$ and $A$ is the set of actions.
 
 <a name="1.3"></a>
 #### 1.3 - **Continuous state spaces** 
